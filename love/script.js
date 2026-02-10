@@ -9,7 +9,7 @@ const formMessage = document.getElementById('formMessage');
 const yesBtn = document.getElementById('yesBtn');
 const noBtn = document.getElementById('noBtn');
 const actionsRow = document.getElementById('actionsRow');
-
+const proposalCard = document.getElementById('proposalCard');
 const envelopeScene = document.getElementById('envelopeScene');
 const envelope = document.getElementById('envelope');
 const envelopePaper = document.getElementById('envelopePaper');
@@ -61,28 +61,90 @@ form.addEventListener('submit', (event) => {
     formMessage.style.color = '#ffd2e4';
 });
 
-function moveNoButton() {
+function intersects(rectA, rectB) {
+    return !(rectA.right < rectB.left || rectA.left > rectB.right || rectA.bottom < rectB.top || rectA.top > rectB.bottom);
+}
+
+function moveNoButton(pointerX = -9999, pointerY = -9999) {
     if (!noButtonCanRun) {
         return;
     }
 
-    const rowRect = actionsRow.getBoundingClientRect();
-    const maxX = rowRect.width - noBtn.offsetWidth;
-    const maxY = rowRect.height - noBtn.offsetHeight;
+    const margin = 18;
+    const maxX = window.innerWidth - noBtn.offsetWidth - margin;
+    const maxY = window.innerHeight - noBtn.offsetHeight - margin;
+    const yesRect = yesBtn.getBoundingClientRect();
 
-    const randomX = Math.max(0, Math.random() * maxX);
-    const randomY = Math.max(0, Math.random() * maxY);
+    let chosenX = margin;
+    let chosenY = margin;
+
+    for (let i = 0; i < 120; i += 1) {
+        const x = margin + Math.random() * Math.max(1, maxX - margin);
+        const y = margin + Math.random() * Math.max(1, maxY - margin);
+
+        const noRect = {
+            left: x,
+            top: y,
+            right: x + noBtn.offsetWidth,
+            bottom: y + noBtn.offsetHeight
+        };
+
+        const safeZoneAroundYes = {
+            left: yesRect.left - 140,
+            top: yesRect.top - 90,
+            right: yesRect.right + 140,
+            bottom: yesRect.bottom + 90
+        };
+
+        const farFromPointer = Math.hypot(x - pointerX, y - pointerY) > 170;
+
+        if (!intersects(noRect, safeZoneAroundYes) && farFromPointer) {
+            chosenX = x;
+            chosenY = y;
+            break;
+        }
+    }
 
     noBtn.classList.add('runaway');
-    noBtn.style.left = `${randomX}px`;
-    noBtn.style.top = `${randomY}px`;
+    noBtn.style.left = `${chosenX}px`;
+    noBtn.style.top = `${chosenY}px`;
 }
 
-noBtn.addEventListener('mouseenter', moveNoButton);
+noBtn.addEventListener('mouseenter', (event) => {
+    moveNoButton(event.clientX, event.clientY);
+});
+
+noBtn.addEventListener('mousemove', (event) => {
+    moveNoButton(event.clientX, event.clientY);
+});
+
+noBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    moveNoButton(event.clientX, event.clientY);
+});
+
 noBtn.addEventListener('touchstart', (event) => {
     event.preventDefault();
-    moveNoButton();
+    const touch = event.touches[0];
+    moveNoButton(touch?.clientX ?? -9999, touch?.clientY ?? -9999);
 }, { passive: false });
+
+proposalCard.addEventListener('mousemove', (event) => {
+    if (!noBtn.classList.contains('runaway')) {
+        return;
+    }
+
+    const noRect = noBtn.getBoundingClientRect();
+    const distance = Math.hypot(
+        event.clientX - (noRect.left + noRect.width / 2),
+        event.clientY - (noRect.top + noRect.height / 2)
+    );
+
+    if (distance < 150) {
+        moveNoButton(event.clientX, event.clientY);
+    }
+});
+
 
 yesBtn.addEventListener('click', () => {
     noBtn.classList.remove('runaway');

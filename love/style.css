@@ -226,7 +226,8 @@ body {
 }
 
 .actions .btn-no.runaway {
-    position: absolute;
+    position: fixed;
+    z-index: 40;
 }
 
 .envelope-scene {
@@ -243,12 +244,25 @@ body {
 
 .envelope {
     position: relative;
-    width: min(76vw, 320px);
-    height: 210px;
+    width: min(84vw, 360px);
+    height: 290px;
     cursor: pointer;
-    filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.35));
+    filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.35));
     outline: none;
 }
+
+.envelope-heart {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 290px;
+    height: 245px;
+    transform: translateX(-50%);
+    background: linear-gradient(145deg, #ff4b92, #ff9dc3);
+    clip-path: path("M 145 36 C 118 -4 52 2 40 56 C 30 102 66 132 145 214 C 224 132 260 102 250 56 C 238 2 172 -4 145 36 Z");
+    opacity: 0.92;
+}
+
 
 .envelope-back,
 .envelope-front,
@@ -259,25 +273,25 @@ body {
 }
 
 .envelope-back {
-    bottom: 10px;
-    width: 280px;
-    height: 160px;
+    bottom: 26px;
+    width: 238px;
+    height: 132px;
     background: linear-gradient(160deg, #ffc7dd, #ff9ec2);
     border-radius: 12px;
 }
 
 .envelope-front {
-    bottom: 10px;
-    width: 280px;
-    height: 160px;
+    bottom: 26px;
+    width: 238px;
+    height: 132px;
     background: linear-gradient(160deg, #ff8cb6, #ff5f97);
     clip-path: polygon(0 0, 100% 0, 50% 56%);
 }
 
 .envelope-flap {
-    bottom: 90px;
-    width: 280px;
-    height: 94px;
+    bottom: 92px;
+    width: 238px;
+    height: 82px;
     background: linear-gradient(160deg, #ffd6e8, #ffaccd);
     clip-path: polygon(0 0, 100% 0, 50% 100%);
     transform-origin: top center;
@@ -287,9 +301,9 @@ body {
 .envelope-paper {
     position: absolute;
     left: 50%;
-    bottom: 42px;
-    transform: translateX(-50%) translateY(60px);
-    width: 230px;
+    bottom: 46px;
+    transform: translateX(-50%) translateY(50px);
+    width: 188px;
     min-height: 130px;
     border-radius: 12px;
     background: #fff9fc;
@@ -309,7 +323,7 @@ body {
 }
 
 .envelope.opened .envelope-paper {
-    transform: translateX(-50%) translateY(-30px);
+    transform: translateX(-50%) translateY(-46px);
     opacity: 1;
     pointer-events: auto;
 }
@@ -421,10 +435,15 @@ body {
     .envelope-back,
     .envelope-front,
     .envelope-flap {
-        width: 240px;
+        width: 212px;
     }
 
     .envelope-paper {
-        width: 200px;
+        width: 172px;
+    }
+     .envelope-heart {
+        width: 248px;
+        height: 210px;
     }
 }
+
