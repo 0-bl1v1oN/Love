@@ -21,11 +21,47 @@ const loveRain = document.getElementById('loveRain');
 const LOVE_LOGIN = '1.12.2020';
 const LOVE_PASSWORD = 'вкусняшка-фитоняшка';
 
-const rainImages = [
-    'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 360"><rect width="300" height="360" rx="24" fill="%23fff7c5"/><rect x="18" y="18" width="264" height="70" rx="12" fill="%23fff"/><text x="150" y="64" text-anchor="middle" font-size="48" font-family="Arial" fill="%23d9155b" font-weight="700">LOVE IS...</text><text x="150" y="140" text-anchor="middle" font-size="31" font-family="Arial" fill="%23801f4f">обнимать тебя</text><text x="150" y="180" text-anchor="middle" font-size="31" font-family="Arial" fill="%23801f4f">каждый день</text><path d="M150 295c-15-17-44-29-44-57 0-18 14-31 30-31 8 0 15 4 20 10 5-6 12-10 20-10 17 0 30 13 30 31 0 28-29 40-44 57z" fill="%23ff4d8d"/></svg>',
-    'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 360"><rect width="300" height="360" rx="24" fill="%23f6ecff"/><rect x="18" y="18" width="264" height="70" rx="12" fill="%23fff"/><text x="150" y="64" text-anchor="middle" font-size="48" font-family="Arial" fill="%23d9155b" font-weight="700">LOVE IS...</text><text x="150" y="140" text-anchor="middle" font-size="31" font-family="Arial" fill="%23602b94">смеяться вместе</text><text x="150" y="180" text-anchor="middle" font-size="31" font-family="Arial" fill="%23602b94">до слёз</text><circle cx="112" cy="270" r="26" fill="%23ff98bf"/><circle cx="188" cy="270" r="26" fill="%23a68bff"/><path d="M150 325c-15-17-44-29-44-57 0-18 14-31 30-31 8 0 15 4 20 10 5-6 12-10 20-10 17 0 30 13 30 31 0 28-29 40-44 57z" fill="%23ff4d8d"/></svg>',
-    'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 360"><rect width="300" height="360" rx="24" fill="%23e7f8ff"/><rect x="18" y="18" width="264" height="70" rx="12" fill="%23fff"/><text x="150" y="64" text-anchor="middle" font-size="48" font-family="Arial" fill="%23d9155b" font-weight="700">LOVE IS...</text><text x="150" y="140" text-anchor="middle" font-size="31" font-family="Arial" fill="%231f5f87">выбирать тебя</text><text x="150" y="180" text-anchor="middle" font-size="31" font-family="Arial" fill="%231f5f87">снова и снова</text><rect x="72" y="230" width="156" height="96" rx="20" fill="%2397dcff"/><path d="M150 313c-15-17-44-29-44-57 0-18 14-31 30-31 8 0 15 4 20 10 5-6 12-10 20-10 17 0 30 13 30 31 0 28-29 40-44 57z" fill="%23ff4d8d"/></svg>'
+const rainCardPresets = [
+    { bg: '#fff7c5', text: '#801f4f', accent: '#ff4d8d', l1: 'обнимать тебя', l2: 'каждый день' },
+    { bg: '#f6ecff', text: '#602b94', accent: '#a68bff', l1: 'смеяться вместе', l2: 'до слёз' },
+    { bg: '#e7f8ff', text: '#1f5f87', accent: '#78cfff', l1: 'выбирать тебя', l2: 'снова и снова' },
+    { bg: '#ffeefa', text: '#7d2f66', accent: '#ff8ccf', l1: 'целовать тебя', l2: 'перед сном' },
+    { bg: '#fff2e8', text: '#8a3d2f', accent: '#ff9f7c', l1: 'греть твои руки', l2: 'зимой' },
+    { bg: '#efffea', text: '#2f6a3e', accent: '#8fe3a3', l1: 'делить с тобой', l2: 'любую мечту' },
+    { bg: '#eef2ff', text: '#3f4f8d', accent: '#9ba9ff', l1: 'держаться за руки', l2: 'всегда' },
+    { bg: '#fff0f3', text: '#8a2c54', accent: '#ffa0be', l1: 'слышать твой смех', l2: 'каждый вечер' },
+    { bg: '#f4fbff', text: '#2f5d7e', accent: '#8fd7ff', l1: 'пить кофе вместе', l2: 'в тишине утра' },
+    { bg: '#fff6ec', text: '#7a4c28', accent: '#ffc98f', l1: 'смотреть на тебя', l2: 'и улыбаться' },
+    { bg: '#f2efff', text: '#5d3f8a', accent: '#c09dff', l1: 'быть рядом', l2: 'в любой день' },
+    { bg: '#eafdf7', text: '#2e6d5a', accent: '#89e8ca', l1: 'беречь твоё сердце', l2: 'нежно-нежно' }
 ];
+
+function createRainCardImage({ bg, text, accent, l1, l2 }) {
+    const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 360">
+            <defs>
+                <linearGradient id="shine" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.45"/>
+                    <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+                </linearGradient>
+            </defs>
+            <rect width="300" height="360" rx="24" fill="${bg}"/>
+            <rect x="18" y="18" width="264" height="70" rx="12" fill="#fff"/>
+            <rect x="18" y="18" width="264" height="70" rx="12" fill="url(#shine)"/>
+            <text x="150" y="64" text-anchor="middle" font-size="48" font-family="Arial" fill="#d9155b" font-weight="700">LOVE IS...</text>
+            <text x="150" y="140" text-anchor="middle" font-size="30" font-family="Arial" fill="${text}">${l1}</text>
+            <text x="150" y="180" text-anchor="middle" font-size="30" font-family="Arial" fill="${text}">${l2}</text>
+            <path d="M150 315c-15-17-44-29-44-57 0-18 14-31 30-31 8 0 15 4 20 10 5-6 12-10 20-10 17 0 30 13 30 31 0 28-29 40-44 57z" fill="${accent}"/>
+            <circle cx="98" cy="258" r="17" fill="${accent}" fill-opacity="0.52"/>
+            <circle cx="202" cy="258" r="17" fill="${accent}" fill-opacity="0.52"/>
+        </svg>
+    `;
+
+    return `data:image/svg+xml;utf8,${encodeURIComponent(svg.trim())}`;
+}
+
+const rainImages = rainCardPresets.map(createRainCardImage);
+
 
 let noButtonCanRun = true;
 
@@ -166,12 +202,12 @@ function createRainItem() {
     const item = document.createElement('div');
     item.className = 'rain-item';
 
-    const duration = 10 + Math.random() * 12;
+    const duration = 12 + Math.random() * 14;
     const left = Math.random() * 100;
-    const delay = -Math.random() * 16;
+    const delay = -Math.random() * 20;
     const drift = `${Math.random() * 180 - 90}px`;
     const spin = `${Math.random() * 260 - 130}deg`;
-    const size = 70 + Math.random() * 55;
+    const size = 78 + Math.random() * 58;
     const image = rainImages[Math.floor(Math.random() * rainImages.length)];
 
     item.style.left = `${left}%`;
@@ -181,10 +217,13 @@ function createRainItem() {
     item.style.setProperty('--drift', drift);
     item.style.setProperty('--spin', spin);
     item.style.backgroundImage = `url('${image}')`;
+    item.style.setProperty('--item-opacity', (0.2 + Math.random() * 0.3).toFixed(2));
+    item.style.setProperty('--item-brightness', (0.78 + Math.random() * 0.28).toFixed(2));
+    item.style.setProperty('--item-blur', `${(Math.random() * 0.8).toFixed(2)}px`);
 
     loveRain.appendChild(item);
 }
 
-for (let i = 0; i < 22; i += 1) {
+for (let i = 0; i < 28; i += 1) {
     createRainItem();
 }
