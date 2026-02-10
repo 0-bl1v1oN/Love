@@ -22,19 +22,28 @@
                         <input
                             id="loginInput"
                             type="text"
-                            placeholder="Подсказка: 1 декабря 2020"
+                            placeholder="Подсказка: дата нашего знакомства"
                             required
                         >
                     </label>
 
                     <label>
                         Пароль
-                        <input
-                            id="passwordInput"
-                            type="password"
-                            placeholder="Подсказка: вкусняшка-фитоняшка"
-                            required
-                        >
+                        <div class="password-wrap">
+                            <input
+                                id="passwordInput"
+                                type="password"
+                                placeholder="Подсказка: недавний статус в спортзале, через дефис"
+                                required
+                            >
+                            <button
+                                class="heart-eye"
+                                id="togglePasswordBtn"
+                                type="button"
+                                aria-label="Показать пароль"
+                                title="Показать пароль"
+                            >💗</button>
+                        </div>
                     </label>
 
                     <button type="submit" class="btn btn-primary">Войти в сердце</button>
@@ -45,18 +54,24 @@
         </section>
 
         <section class="screen valentine-screen hidden" id="valentineScreen">
-            <div class="heart-stage" id="heartStage">
-                <div class="big-heart" id="bigHeart" aria-live="polite">
-                    <div class="heart-front">
-                        <h2>Ты примешь мою любовь?</h2>
-                        <div class="actions">
-                            <button class="btn btn-yes" id="yesBtn">Да 💖</button>
-                            <button class="btn btn-no" id="noBtn">Нет 🙈</button>
+            <div class="proposal-card glass" id="proposalCard">
+                <h2>Ты примешь мою любовь?</h2>
+
+                <div class="actions" id="actionsRow">
+                    <button class="btn btn-yes" id="yesBtn">Да 💖</button>
+                    <button class="btn btn-no" id="noBtn">Нет 🙈</button>
+                </div>
+
+                <div class="envelope-scene hidden" id="envelopeScene">
+                    <p class="open-hint">Нажми на конверт — он откроется ✨</p>
+
+                    <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Открыть конверт">
+                        <div class="envelope-back"></div>
+                        <div class="envelope-paper" id="envelopePaper">
+                            <span>Нажми, чтобы прочитать письмо 💌</span>
                         </div>
-                    </div>
-                    <div class="heart-back">
-                        <p class="open-hint">Сердце открылось. Нажми на письмо ✉️</p>
-                        <button class="letter-btn" id="letterBtn" aria-label="Открыть письмо">✉️</button>
+                        <div class="envelope-front"></div>
+                        <div class="envelope-flap"></div>
                     </div>
                 </div>
             </div>
@@ -64,7 +79,7 @@
     </main>
 
     <section class="letter-overlay hidden" id="letterOverlay" aria-modal="true" role="dialog">
-        <div class="letter-paper">
+        <div class="letter-paper-full">
             <button class="close-letter" id="closeLetter" aria-label="Закрыть письмо">×</button>
             <h3>Моей любимой 💌</h3>
             <p>

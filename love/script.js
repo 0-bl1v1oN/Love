@@ -3,12 +3,17 @@ const valentineScreen = document.getElementById('valentineScreen');
 const form = document.getElementById('loveLoginForm');
 const loginInput = document.getElementById('loginInput');
 const passwordInput = document.getElementById('passwordInput');
+const togglePasswordBtn = document.getElementById('togglePasswordBtn');
 const formMessage = document.getElementById('formMessage');
+
 const yesBtn = document.getElementById('yesBtn');
 const noBtn = document.getElementById('noBtn');
-const bigHeart = document.getElementById('bigHeart');
-const heartStage = document.getElementById('heartStage');
-const letterBtn = document.getElementById('letterBtn');
+const actionsRow = document.getElementById('actionsRow');
+
+const envelopeScene = document.getElementById('envelopeScene');
+const envelope = document.getElementById('envelope');
+const envelopePaper = document.getElementById('envelopePaper');
+
 const letterOverlay = document.getElementById('letterOverlay');
 const closeLetter = document.getElementById('closeLetter');
 const loveRain = document.getElementById('loveRain');
@@ -22,9 +27,18 @@ const rainImages = [
     'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 360"><rect width="300" height="360" rx="24" fill="%23e7f8ff"/><rect x="18" y="18" width="264" height="70" rx="12" fill="%23fff"/><text x="150" y="64" text-anchor="middle" font-size="48" font-family="Arial" fill="%23d9155b" font-weight="700">LOVE IS...</text><text x="150" y="140" text-anchor="middle" font-size="31" font-family="Arial" fill="%231f5f87">выбирать тебя</text><text x="150" y="180" text-anchor="middle" font-size="31" font-family="Arial" fill="%231f5f87">снова и снова</text><rect x="72" y="230" width="156" height="96" rx="20" fill="%2397dcff"/><path d="M150 313c-15-17-44-29-44-57 0-18 14-31 30-31 8 0 15 4 20 10 5-6 12-10 20-10 17 0 30 13 30 31 0 28-29 40-44 57z" fill="%23ff4d8d"/></svg>'
 ];
 
+let noButtonCanRun = true;
+
 function normalizeInput(value) {
     return value.trim().toLowerCase().replace(/\s+/g, ' ');
 }
+
+togglePasswordBtn.addEventListener('click', () => {
+    const isHidden = passwordInput.type === 'password';
+    passwordInput.type = isHidden ? 'text' : 'password';
+    togglePasswordBtn.textContent = isHidden ? '💖' : '💗';
+    togglePasswordBtn.setAttribute('aria-label', isHidden ? 'Скрыть пароль' : 'Показать пароль');
+});
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -39,7 +53,7 @@ form.addEventListener('submit', (event) => {
         setTimeout(() => {
             loginScreen.classList.add('hidden');
             valentineScreen.classList.remove('hidden');
-        }, 700);
+        }, 650);
         return;
     }
 
@@ -48,14 +62,18 @@ form.addEventListener('submit', (event) => {
 });
 
 function moveNoButton() {
-    const stageRect = heartStage.getBoundingClientRect();
-    const maxX = stageRect.width - noBtn.offsetWidth;
-    const maxY = stageRect.height - noBtn.offsetHeight;
+    if (!noButtonCanRun) {
+        return;
+    }
+
+    const rowRect = actionsRow.getBoundingClientRect();
+    const maxX = rowRect.width - noBtn.offsetWidth;
+    const maxY = rowRect.height - noBtn.offsetHeight;
 
     const randomX = Math.max(0, Math.random() * maxX);
     const randomY = Math.max(0, Math.random() * maxY);
 
-    noBtn.style.position = 'absolute';
+    noBtn.classList.add('runaway');
     noBtn.style.left = `${randomX}px`;
     noBtn.style.top = `${randomY}px`;
 }
@@ -67,10 +85,31 @@ noBtn.addEventListener('touchstart', (event) => {
 }, { passive: false });
 
 yesBtn.addEventListener('click', () => {
-    bigHeart.classList.add('flipped');
+    noBtn.classList.remove('runaway');
+    noBtn.style.left = '';
+    noBtn.style.top = '';
+
+    actionsRow.classList.add('hidden');
+    envelopeScene.classList.remove('hidden');
 });
 
-letterBtn.addEventListener('click', () => {
+function openEnvelope() {
+    envelope.classList.add('opened');
+}
+
+envelope.addEventListener('click', openEnvelope);
+envelope.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openEnvelope();
+    }
+});
+
+envelopePaper.addEventListener('click', () => {
+    if (!envelope.classList.contains('opened')) {
+        return;
+    }
+
     letterOverlay.classList.remove('hidden');
 });
 
