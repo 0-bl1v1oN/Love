@@ -3,10 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Регистрация любви</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="love-rain" id="loveRain" aria-hidden="true"></div>
+
+    <main class="app">
+        <section class="screen login-screen" id="loginScreen">
+            <div class="sparkles"></div>
+            <div class="login-card glass">
+                <h1>💘 Регистрация любви</h1>
+                <p class="subtitle">Только для самой прекрасной девушки на свете.</p>
+
+                <form id="loveLoginForm" class="love-form" autocomplete="off">
+                    <label>
+                        Логин
+                        <input
+                            id="loginInput"
+                            type="text"
+                            placeholder="Подсказка: 1 декабря 2020"
+                            required
+                        >
+                    </label>
+
+                    <label>
+                        Пароль
+                        <input
+                            id="passwordInput"
+                            type="password"
+                            placeholder="Подсказка: вкусняшка-фитоняшка"
+                            required
+                        >
+                    </label>
+
+                    <button type="submit" class="btn btn-primary">Войти в сердце</button>
+                </form>
+
+                <p id="formMessage" class="form-message" role="status" aria-live="polite"></p>
+            </div>
+        </section>
+
+        <section class="screen valentine-screen hidden" id="valentineScreen">
+            <div class="heart-stage" id="heartStage">
+                <div class="big-heart" id="bigHeart" aria-live="polite">
+                    <div class="heart-front">
+                        <h2>Ты примешь мою любовь?</h2>
+                        <div class="actions">
+                            <button class="btn btn-yes" id="yesBtn">Да 💖</button>
+                            <button class="btn btn-no" id="noBtn">Нет 🙈</button>
+                        </div>
+                    </div>
+                    <div class="heart-back">
+                        <p class="open-hint">Сердце открылось. Нажми на письмо ✉️</p>
+                        <button class="letter-btn" id="letterBtn" aria-label="Открыть письмо">✉️</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <section class="letter-overlay hidden" id="letterOverlay" aria-modal="true" role="dialog">
+        <div class="letter-paper">
+            <button class="close-letter" id="closeLetter" aria-label="Закрыть письмо">×</button>
+            <h3>Моей любимой 💌</h3>
+            <p>
+                Спасибо тебе за каждую улыбку, за тепло твоих рук, за вдохновение,
+                которое ты даришь каждый день. С тобой даже обычные моменты становятся
+                волшебными.
+            </p>
+            <p>
+                Я люблю тебя за твоё большое сердце, за твою нежность,
+                за твою силу и за то, как рядом с тобой хочется быть лучше.
+            </p>
+            <p>
+                Пусть у нас впереди будет ещё очень много уютных вечеров,
+                путешествий, объятий и маленьких счастливых «навсегда».
+            </p>
+            <p class="signature">Люблю тебя безмерно ❤️</p>
+        </div>
+    </section>
+
     <script src="script.js"></script>
 </body>
 </html>
