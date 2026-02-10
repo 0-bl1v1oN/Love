@@ -18,7 +18,7 @@ const letterOverlay = document.getElementById('letterOverlay');
 const closeLetter = document.getElementById('closeLetter');
 const loveRain = document.getElementById('loveRain');
 
-const LOVE_LOGIN = '1 декабря 2020';
+const LOVE_LOGIN = '1.12.2020';
 const LOVE_PASSWORD = 'вкусняшка-фитоняшка';
 
 const rainImages = [
