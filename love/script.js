@@ -65,40 +65,40 @@ function intersects(rectA, rectB) {
     return !(rectA.right < rectB.left || rectA.left > rectB.right || rectA.bottom < rectB.top || rectA.top > rectB.bottom);
 }
 
-function moveNoButton(pointerX = -9999, pointerY = -9999) {
+function moveNoButton() {
     if (!noButtonCanRun) {
         return;
     }
 
-    const margin = 18;
-    const maxX = window.innerWidth - noBtn.offsetWidth - margin;
-    const maxY = window.innerHeight - noBtn.offsetHeight - margin;
+    const cardRect = proposalCard.getBoundingClientRect();
     const yesRect = yesBtn.getBoundingClientRect();
 
-    let chosenX = margin;
-    let chosenY = margin;
+    const maxX = Math.max(0, cardRect.width - noBtn.offsetWidth - 24);
+    const maxY = Math.max(0, cardRect.height - noBtn.offsetHeight - 24);
 
-    for (let i = 0; i < 120; i += 1) {
-        const x = margin + Math.random() * Math.max(1, maxX - margin);
-        const y = margin + Math.random() * Math.max(1, maxY - margin);
+    let chosenX = noBtn.offsetLeft || 16;
+    let chosenY = noBtn.offsetTop || 16;
 
-        const noRect = {
-            left: x,
-            top: y,
-            right: x + noBtn.offsetWidth,
-            bottom: y + noBtn.offsetHeight
+        for (let i = 0; i < 100; i += 1) {
+        const x = 12 + Math.random() * maxX;
+        const y = 12 + Math.random() * maxY;
+
+        const candidateRect = {
+            left: cardRect.left + x,
+            top: cardRect.top + y,
+            right: cardRect.left + x + noBtn.offsetWidth,
+            bottom: cardRect.top + y + noBtn.offsetHeight
         };
 
         const safeZoneAroundYes = {
-            left: yesRect.left - 140,
-            top: yesRect.top - 90,
-            right: yesRect.right + 140,
-            bottom: yesRect.bottom + 90
+            left: yesRect.left - 120,
+            top: yesRect.top - 80,
+            right: yesRect.right + 120,
+            bottom: yesRect.bottom + 80
         };
 
-        const farFromPointer = Math.hypot(x - pointerX, y - pointerY) > 170;
 
-        if (!intersects(noRect, safeZoneAroundYes) && farFromPointer) {
+        if (!intersects(candidateRect, safeZoneAroundYes)) {
             chosenX = x;
             chosenY = y;
             break;
@@ -110,39 +110,16 @@ function moveNoButton(pointerX = -9999, pointerY = -9999) {
     noBtn.style.top = `${chosenY}px`;
 }
 
-noBtn.addEventListener('mouseenter', (event) => {
-    moveNoButton(event.clientX, event.clientY);
-});
-
-noBtn.addEventListener('mousemove', (event) => {
-    moveNoButton(event.clientX, event.clientY);
-});
-
-noBtn.addEventListener('click', (event) => {
-    event.preventDefault();
-    moveNoButton(event.clientX, event.clientY);
-});
+noBtn.addEventListener('mouseenter', moveNoButton);
 
 noBtn.addEventListener('touchstart', (event) => {
     event.preventDefault();
-    const touch = event.touches[0];
-    moveNoButton(touch?.clientX ?? -9999, touch?.clientY ?? -9999);
+    moveNoButton();
 }, { passive: false });
 
-proposalCard.addEventListener('mousemove', (event) => {
-    if (!noBtn.classList.contains('runaway')) {
-        return;
-    }
-
-    const noRect = noBtn.getBoundingClientRect();
-    const distance = Math.hypot(
-        event.clientX - (noRect.left + noRect.width / 2),
-        event.clientY - (noRect.top + noRect.height / 2)
-    );
-
-    if (distance < 150) {
-        moveNoButton(event.clientX, event.clientY);
-    }
+noBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    moveNoButton();
 });
 
 
