@@ -7,8 +7,8 @@
     --text: #fff6fb;
     --accent: #ff4d8d;
     --danger: #ff6f91;
-    --hand-font: "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
-    --paper-font: "Trebuchet MS", "Segoe UI", sans-serif;
+    --hand-font: "Caveat", "Marck Script", "Segoe Print", "Bradley Hand", cursive;
+    --paper-font: "Caveat", "Segoe UI", sans-serif;
 }
 
 * {
@@ -377,8 +377,9 @@ body {
     line-height: 1.72;
     color: #5e2840;
     font-family: var(--hand-font);
-    font-size: 1.07rem;
-    letter-spacing: 0.02em;
+    font-size: clamp(1.22rem, 2.4vw, 1.55rem);
+    letter-spacing: 0.01em;
+    text-rendering: optimizeLegibility;
     background:
         radial-gradient(circle at 14% 8%, rgba(255, 214, 233, 0.75) 0 45px, transparent 46px),
         linear-gradient(transparent 32px, rgba(233, 150, 185, 0.28) 33px, transparent 34px) 0 0 / 100% 34px,
@@ -418,22 +419,37 @@ body {
     margin-top: 2px;
     margin-bottom: 14px;
     color: #c73073;
-    font-size: 2rem;
+    font-size: clamp(2.1rem, 4.2vw, 2.9rem);
     font-family: var(--hand-font);
-    letter-spacing: 0.03em;
+    letter-spacing: 0.02em;
+    font-weight: 700;
 }
 
 .letter-paper-full p {
     margin: 0 0 16px;
     padding-left: 16px;
     max-width: 61ch;
+    font-family: var(--paper-font);
+    line-height: 1.45;
+    font-weight: 500;
+    text-shadow: 0.35px 0.35px 0 rgba(132, 42, 79, 0.18);
+}
+
+.letter-paper-full p:nth-of-type(odd) {
+    transform: rotate(-0.35deg);
+}
+
+.letter-paper-full p:nth-of-type(even) {
+    transform: rotate(0.25deg);
 }
 
 .signature {
     font-weight: 700;
     margin-bottom: 0;
     color: #9f1f58;
-    font-size: 1.25rem;
+    font-size: clamp(1.6rem, 3.2vw, 2rem);
+    font-family: var(--hand-font);
+    letter-spacing: 0.02em;
 }
 
 .close-letter {
@@ -536,6 +552,13 @@ body {
      .envelope-heart {
         width: 248px;
         height: 210px;
+    }
+    .letter-paper-full {
+        font-size: clamp(1.16rem, 5.4vw, 1.42rem);
+    }
+
+    .letter-paper-full p {
+        line-height: 1.42;
     }
 }
 
