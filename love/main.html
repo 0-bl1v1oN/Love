@@ -26,6 +26,7 @@
                             id="loginInput"
                             type="text"
                             placeholder="Дата нашего знакомства"
+                            data-focus-hint="Дата нашего знакомства"
                             required
                         >
                     </label>
@@ -37,6 +38,7 @@
                                 id="passwordInput"
                                 type="password"
                                 placeholder="Недавний статус в спортзале, через дефис"
+                                data-focus-hint="Недавний статус в спортзале, через дефис"
                                 required
                             >
                             <button
@@ -51,6 +53,8 @@
 
                     <button type="submit" class="btn btn-primary">Войти в сердце</button>
                 </form>
+
+                <p id="inputFocusHint" class="input-focus-hint" aria-live="polite"></p>
 
                 <p id="formMessage" class="form-message" role="status" aria-live="polite"></p>
             </div>

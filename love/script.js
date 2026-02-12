@@ -5,6 +5,7 @@ const loginInput = document.getElementById('loginInput');
 const passwordInput = document.getElementById('passwordInput');
 const togglePasswordBtn = document.getElementById('togglePasswordBtn');
 const formMessage = document.getElementById('formMessage');
+const inputFocusHint = document.getElementById('inputFocusHint');
 
 const yesBtn = document.getElementById('yesBtn');
 const noBtn = document.getElementById('noBtn');
@@ -64,6 +65,55 @@ const rainImages = rainCardPresets.map(createRainCardImage);
 
 
 let noButtonCanRun = true;
+
+const keyboardMap = {
+    q: 'й', w: 'ц', e: 'у', r: 'к', t: 'е', y: 'н', u: 'г', i: 'ш', o: 'щ', p: 'з',
+    '[': 'х', ']': 'ъ', a: 'ф', s: 'ы', d: 'в', f: 'а', g: 'п', h: 'р', j: 'о',
+    k: 'л', l: 'д', ';': 'ж', "'": 'э', z: 'я', x: 'ч', c: 'с', v: 'м', b: 'и',
+    n: 'т', m: 'ь', ',': 'б', '.': 'ю', '`': 'ё', '/': '.',
+    '@': '"', '#': '№', '$': ';', '^': ':', '&': '?'
+};
+
+function convertToRuLayout(value) {
+    return Array.from(value).map((char) => {
+        const lower = char.toLowerCase();
+        const mapped = keyboardMap[lower];
+
+        if (!mapped) {
+            return char;
+        }
+
+        return char === lower ? mapped : mapped.toUpperCase();
+    }).join('');
+}
+
+function handleFocusHint(event) {
+    inputFocusHint.textContent = event.target.dataset.focusHint || '';
+}
+
+function clearFocusHint() {
+    inputFocusHint.textContent = '';
+}
+
+function keepRussianLayout(event) {
+    const convertedValue = convertToRuLayout(event.target.value);
+
+    if (convertedValue !== event.target.value) {
+        const cursor = event.target.selectionStart;
+        event.target.value = convertedValue;
+
+        if (typeof cursor === 'number') {
+            event.target.setSelectionRange(cursor, cursor);
+        }
+    }
+}
+
+[loginInput, passwordInput].forEach((input) => {
+    input.addEventListener('focus', handleFocusHint);
+    input.addEventListener('blur', clearFocusHint);
+    input.addEventListener('input', keepRussianLayout);
+});
+
 
 function normalizeInput(value) {
     return value.trim().toLowerCase().replace(/\s+/g, ' ');
