@@ -18,9 +18,11 @@ const envelopePaper = document.getElementById('envelopePaper');
 const letterOverlay = document.getElementById('letterOverlay');
 const closeLetter = document.getElementById('closeLetter');
 const loveRain = document.getElementById('loveRain');
-
+const confettiLayer = document.getElementById('confettiLayer');
+const loveCounter = document.getElementById('loveCounter');
 const LOVE_LOGIN = '1.12.2020';
 const LOVE_PASSWORD = 'вкусняшка-фитоняшка';
+const LOVE_START_DATE = '01-12-2020';
 
 const rainCardPresets = [
     { bg: '#fff7c5', text: '#801f4f', accent: '#ff4d8d', l1: 'обнимать тебя', l2: 'каждый день' },
@@ -89,6 +91,56 @@ function clearFocusHint() {
 function normalizeInput(value) {
     return value.trim().toLowerCase().replace(/\s+/g, ' ');
 }
+
+function updateLoveCounter() {
+    if (!loveCounter) {
+        return;
+    }
+
+    const startDate = new Date(`${LOVE_START_DATE}T00:00:00`);
+    const today = new Date();
+
+    startDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    const days = Math.max(0, Math.floor((today - startDate) / (1000 * 60 * 60 * 24)));
+
+    const suffix = days % 10 === 1 && days % 100 !== 11
+        ? 'день'
+        : (days % 10 >= 2 && days % 10 <= 4 && (days % 100 < 12 || days % 100 > 14) ? 'дня' : 'дней');
+
+    loveCounter.textContent = `Вместе уже: ${days} ${suffix} 💖`;
+}
+
+function launchConfettiBurst(count = 26) {
+    if (!confettiLayer) {
+        return;
+    }
+
+    const palette = ['#ff4d8d', '#ffd166', '#8fe3a3', '#a68bff', '#7ad7ff', '#ff9ec2'];
+
+    for (let i = 0; i < count; i += 1) {
+        const piece = document.createElement('span');
+        piece.className = 'confetti-piece';
+
+        const fromCenter = 42 + Math.random() * 16;
+        const dx = Math.round(Math.random() * 340 - 170);
+        const dy = Math.round(window.innerHeight * (0.35 + Math.random() * 0.45));
+        const spin = `${Math.round(Math.random() * 540 - 270)}deg`;
+        const duration = 900 + Math.random() * 650;
+
+        piece.style.left = `${fromCenter}%`;
+        piece.style.background = palette[Math.floor(Math.random() * palette.length)];
+        piece.style.setProperty('--dx', `${dx}px`);
+        piece.style.setProperty('--dy', `${dy}px`);
+        piece.style.setProperty('--spin', spin);
+        piece.style.animationDuration = `${duration}ms`;
+
+        confettiLayer.appendChild(piece);
+        piece.addEventListener('animationend', () => piece.remove(), { once: true });
+    }
+}
+
 
 togglePasswordBtn.addEventListener('click', () => {
     const isHidden = passwordInput.type === 'password';
@@ -181,6 +233,7 @@ noBtn.addEventListener('click', (event) => {
 
 
 yesBtn.addEventListener('click', () => {
+    launchConfettiBurst();
     noBtn.classList.remove('runaway');
     noBtn.style.left = '';
     noBtn.style.top = '';
@@ -244,6 +297,9 @@ function createRainItem() {
 
     loveRain.appendChild(item);
 }
+
+updateLoveCounter();
+
 
 for (let i = 0; i < 28; i += 1) {
     createRainItem();

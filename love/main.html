@@ -10,14 +10,16 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="love-rain" id="loveRain" aria-hidden="true"></div> 
+    <div class="love-rain" id="loveRain" aria-hidden="true"></div>
+    <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div> 
 
     <main class="app"> 
         <section class="screen login-screen" id="loginScreen"> 
             <div class="sparkles"></div> 
             <div class="login-card glass"> 
                 <h1>💘 Регистрация любви</h1> 
-                <p class="subtitle">Только для самой прекрасной девушки на свете.</p> 
+                <p class="subtitle">Только для самой прекрасной девушки на свете.</p>
+                <p class="love-counter" id="loveCounter" aria-live="polite">Вместе уже: считаю дни…</p> 
 
                 <form id="loveLoginForm" class="love-form" autocomplete="off">
                     <label>
