@@ -22,7 +22,7 @@ const confettiLayer = document.getElementById('confettiLayer');
 const loveCounter = document.getElementById('loveCounter');
 const LOVE_LOGIN = '1.12.2020';
 const LOVE_PASSWORD = 'вкусняшка-фитоняшка';
-const LOVE_START_DATE = '01-12-2020';
+const LOVE_START_DATE = '2020-12-01';
 
 const rainCardPresets = [
     { bg: '#fff7c5', text: '#801f4f', accent: '#ff4d8d', l1: 'обнимать тебя', l2: 'каждый день' },
@@ -92,13 +92,40 @@ function normalizeInput(value) {
     return value.trim().toLowerCase().replace(/\s+/g, ' ');
 }
 
+function parseLoveStartDate(rawDate) {
+    if (!rawDate) {
+        return null;
+    }
+
+    const isoDatePattern = /^(\d{4})-(\d{2})-(\d{2})$/;
+    const ruDatePattern = /^(\d{1,2})[.-](\d{1,2})[.-](\d{4})$/;
+
+    if (isoDatePattern.test(rawDate)) {
+        const [, year, month, day] = rawDate.match(isoDatePattern);
+        return new Date(Number(year), Number(month) - 1, Number(day));
+    }
+
+    if (ruDatePattern.test(rawDate)) {
+        const [, day, month, year] = rawDate.match(ruDatePattern);
+        return new Date(Number(year), Number(month) - 1, Number(day));
+    }
+
+    return null;
+}
+
+
 function updateLoveCounter() {
     if (!loveCounter) {
         return;
     }
 
-    const startDate = new Date(`${LOVE_START_DATE}T00:00:00`);
+    const startDate = parseLoveStartDate(LOVE_START_DATE);
     const today = new Date();
+
+    if (!startDate || Number.isNaN(startDate.getTime())) {
+        loveCounter.textContent = 'Вместе уже: дата любви пока не настроена 💞';
+        return;
+    }
 
     startDate.setHours(0, 0, 0, 0);
     today.setHours(0, 0, 0, 0);
@@ -109,7 +136,11 @@ function updateLoveCounter() {
         ? 'день'
         : (days % 10 >= 2 && days % 10 <= 4 && (days % 100 < 12 || days % 100 > 14) ? 'дня' : 'дней');
 
-    loveCounter.textContent = `Вместе уже: ${days} ${suffix} 💖`;
+    loveCounter.innerHTML = `
+        <span class="counter-prefix">Вместе уже</span>
+        <span class="counter-value">${days}</span>
+        <span class="counter-suffix">${suffix} 💖</span>
+    `;
 }
 
 function launchConfettiBurst(count = 26) {
