@@ -43,7 +43,7 @@ let miniGameBestScore = 0;
 let miniGameRunning = false;
 let envelopeUnlocked = false;
 const MINI_GAME_TARGET_SCORE = 20;
-
+const MINI_GAME_BEST_SCORE_KEY = 'love-mini-game-best-score';
 
 const WARM_MESSAGES = [
     'Ты — моя любимая причина улыбнуться без повода.',
@@ -236,6 +236,22 @@ function revealMiniGameGate() {
     }
 }
 
+function loadMiniGameBestScore() {
+    const rawBest = window.localStorage.getItem(MINI_GAME_BEST_SCORE_KEY);
+    const parsedBest = Number.parseInt(rawBest ?? '', 10);
+
+    miniGameBestScore = Number.isFinite(parsedBest) && parsedBest > 0 ? parsedBest : 0;
+
+    if (bestScoreEl) {
+        bestScoreEl.textContent = String(miniGameBestScore);
+    }
+}
+
+function persistMiniGameBestScore() {
+    window.localStorage.setItem(MINI_GAME_BEST_SCORE_KEY, String(miniGameBestScore));
+}
+
+
 function cleanupMiniGameHearts() {
     if (!heartGameArea) {
         return;
@@ -253,6 +269,7 @@ function finishMiniGame(keepButtonDisabled = false) {
     cleanupMiniGameHearts();
 
     miniGameBestScore = Math.max(miniGameBestScore, miniGameScore);
+    persistMiniGameBestScore();
     if (bestScoreEl) {
         bestScoreEl.textContent = String(miniGameBestScore);
     }
@@ -369,12 +386,12 @@ function startMiniGame() {
             gameTimeEl.textContent = String(Math.max(0, miniGameSecondsLeft));
         }
 
-        if (miniGameScore >= MINI_GAME_TARGET_SCORE) {
-            unlockEnvelope();
-            return;
-        }
-
         if (miniGameSecondsLeft <= 0) {
+            if (miniGameScore >= MINI_GAME_TARGET_SCORE) {
+                unlockEnvelope();
+                return;
+            }
+
             finishMiniGame();
         }
     }, 1000);
@@ -621,6 +638,7 @@ function createRainItem() {
     loveRain.appendChild(item);
 }
 
+loadMiniGameBestScore();
 updateLoveCounter();
 
 
