@@ -55,7 +55,17 @@ const WARM_MESSAGES = [
     'Ты как уют, который всегда хочется обнять.',
     'Когда думаю о тебе, внутри сразу светлеет.',
     'Ты — мой любимый человек даже в тишине.',
-    'Спасибо тебе за твою нежность и силу одновременно.'
+    'Спасибо тебе за твою нежность и силу одновременно.',
+    'С тобой хочется планировать будущее и верить в чудо.',
+    'Ты делаешь мой мир добрее одним своим присутствием.',
+    'Мне нравится всё: как ты говоришь, смеёшься и молчишь.',
+    'Ты мой самый красивый случай в жизни.',
+    'С тобой даже дождь за окном кажется романтичным.',
+    'Твоя улыбка — это мой личный антистресс.',
+    'Я обожаю тебя за твою искренность и свет.',
+    'С тобой я чувствую, что дома — это не место, а человек.',
+    'Ты умеешь превращать обычные моменты в волшебные.',
+    'Каждый день рядом с тобой — маленький подарок судьбы.'
 ];
 
 let warmMessagePool = [];
@@ -104,6 +114,18 @@ const rainImages = rainCardPresets.map(createRainCardImage);
 
 
 let noButtonCanRun = true;
+
+function bindReliableTap(element, handler) {
+    if (!element) {
+        return;
+    }
+
+    element.addEventListener('click', handler);
+    element.addEventListener('touchstart', (event) => {
+        event.preventDefault();
+        handler(event);
+    }, { passive: false });
+}
 
 function handleFocusHint(event) {
     if (!inputFocusHint) {
@@ -197,9 +219,7 @@ function showWarmMessage() {
     warmMessageText.textContent = nextWarmMessage();
 }
 
-if (warmMessageBtn) {
-    warmMessageBtn.addEventListener('click', showWarmMessage);
-}
+bindReliableTap(warmMessageBtn, showWarmMessage);
 
 function showWarmMessage() {
     if (!warmMessageText) {
@@ -533,7 +553,7 @@ function openEnvelope() {
     envelope.classList.add('opened');
 }
 
-envelope.addEventListener('click', openEnvelope);
+bindReliableTap(envelope, openEnvelope);
 envelope.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
