@@ -74,6 +74,28 @@
                     <button class="btn btn-yes" id="yesBtn">Да 💖</button> 
                     <button class="btn btn-no" id="noBtn">Нет 🙈</button> 
                 </div> 
+
+                <div class="extra-love-tools" aria-label="Романтические активности">
+                    <article class="love-widget warm-widget">
+                        <h3>💌 Тёплое сообщение</h3>
+                        <p class="widget-hint">Когда захочется улыбнуться — нажми кнопку.</p>
+                        <button class="btn btn-soft" id="warmMessageBtn" type="button">Показать тёплые слова</button>
+                        <p class="warm-message-text" id="warmMessageText" aria-live="polite">Я уже приготовил 20 сообщений только для тебя ✨</p>
+                    </article>
+
+                    <article class="love-widget game-widget">
+                        <h3>🎮 Мини-игра: поймай сердечки</h3>
+                        <p class="widget-hint">Лови сердечки за 20 секунд — сколько успеешь?</p>
+                        <div class="game-stats">
+                            <span>Очки: <strong id="gameScore">0</strong></span>
+                            <span>Время: <strong id="gameTime">20</strong>с</span>
+                            <span>Рекорд: <strong id="bestScore">0</strong></span>
+                        </div>
+                        <button class="btn btn-soft" id="startMiniGameBtn" type="button">Старт</button>
+                        <div class="heart-game-area" id="heartGameArea" aria-label="Игровая зона"></div>
+                        <p class="mini-game-status" id="miniGameStatus" aria-live="polite">Нажми «Старт», и сердечки полетят вниз 💞</p>
+                    </article>
+                </div>
  
                 <div class="envelope-scene hidden" id="envelopeScene"> 
                     <p class="open-hint">Нажми на конверт — он откроется ✨</p> 
