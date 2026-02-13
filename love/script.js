@@ -533,7 +533,11 @@ yesBtn.addEventListener('click', () => {
         envelopeHint.textContent = 'Нажми на конверт — он откроется ✨';
     }
     if (miniGameStatus) {
-        miniGameStatus.textContent = 'Нажми на конверт, чтобы начать испытание 💞';
+        miniGameStatus.textContent = 'Нажми на конверт, потом на «Старт», чтобы начать испытание 💞';
+    }
+    if (startMiniGameBtn) {
+        startMiniGameBtn.disabled = false;
+        startMiniGameBtn.textContent = 'Старт';
     }
     envelope.classList.remove('opened');
 
@@ -545,12 +549,9 @@ yesBtn.addEventListener('click', () => {
 function openEnvelope() {
     if (!envelopeUnlocked) {
         revealMiniGameGate();
-        if (!miniGameRunning) {
-            startMiniGame();
-        }
 
         if (miniGameStatus) {
-            miniGameStatus.textContent = `Поймай ${MINI_GAME_TARGET_SCORE} сердечек, и конверт откроется 💘`;
+            miniGameStatus.textContent = `Нажми «Старт», поймай ${MINI_GAME_TARGET_SCORE} сердечек, и конверт откроется 💘`;
         }
 
         miniGameGate?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -567,13 +568,22 @@ envelope.addEventListener('keydown', (event) => {
     }
 });
 
-envelopePaper.addEventListener('click', () => {
+function openLetterFromEnvelope(event) {
     if (!envelope.classList.contains('opened')) {
         return;
     }
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
 
     letterOverlay.classList.remove('hidden');
-});
+}
+
+if (envelopePaper) {
+    envelopePaper.addEventListener('click', openLetterFromEnvelope);
+    envelopePaper.addEventListener('touchstart', openLetterFromEnvelope, { passive: false });
+}
 
 closeLetter.addEventListener('click', () => {
     letterOverlay.classList.add('hidden');
