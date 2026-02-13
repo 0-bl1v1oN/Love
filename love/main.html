@@ -27,11 +27,8 @@
                         <input
                             id="loginInput"
                             type="text"
-                            inputmode="numeric"
                             lang="ru"
-                            placeholder="01.12.2020"
-                            maxlength="10"
-                            autocomplete="off"
+                            placeholder="Дата нашего знакомства"
                             required
                         >
                         <span class="field-tooltip" role="note">Дата нашего знакомства</span>
@@ -75,7 +72,16 @@
                 <div class="actions" id="actionsRow"> 
                     <button class="btn btn-yes" id="yesBtn">Да 💖</button> 
                     <button class="btn btn-no" id="noBtn">Нет 🙈</button> 
-                </div> 
+                </div>
+                
+                <div class="warm-tools" id="warmTools" aria-label="Тёплые слова">
+                    <article class="love-widget warm-widget">
+                        <h3>💌 Тёплые слова</h3>
+                        <p class="widget-hint">Нажми, когда захочешь маленький комплимент.</p>
+                        <button class="btn btn-soft" id="warmMessageBtn" type="button">Показать тёплые слова</button>
+                        <p class="warm-message-text" id="warmMessageText" aria-live="polite">Я подготовил для тебя тёплые послания ✨</p>
+                    </article>
+                </div>
 
                 <div class="envelope-scene hidden" id="envelopeScene"> 
                     <p class="open-hint" id="envelopeHint">Нажми на конверт — он откроется ✨</p>

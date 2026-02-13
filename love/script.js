@@ -22,7 +22,9 @@ const gameScoreEl = document.getElementById('gameScore');
 const gameTimeEl = document.getElementById('gameTime');
 const bestScoreEl = document.getElementById('bestScore');
 const miniGameStatus = document.getElementById('miniGameStatus');
-
+const warmTools = document.getElementById('warmTools');
+const warmMessageBtn = document.getElementById('warmMessageBtn');
+const warmMessageText = document.getElementById('warmMessageText');
 const letterOverlay = document.getElementById('letterOverlay');
 const closeLetter = document.getElementById('closeLetter');
 const loveRain = document.getElementById('loveRain');
@@ -41,6 +43,22 @@ let miniGameBestScore = 0;
 let miniGameRunning = false;
 let envelopeUnlocked = false;
 const MINI_GAME_TARGET_SCORE = 20;
+
+
+const WARM_MESSAGES = [
+    'Ты — моя любимая причина улыбнуться без повода.',
+    'С тобой даже самый обычный день становится особенным.',
+    'Твой смех — мой любимый звук во вселенной.',
+    'Ты очень красивая. И глазами, и сердцем.',
+    'Рядом с тобой спокойно и по-настоящему тепло.',
+    'Ты вдохновляешь меня становиться лучше каждый день.',
+    'Ты как уют, который всегда хочется обнять.',
+    'Когда думаю о тебе, внутри сразу светлеет.',
+    'Ты — мой любимый человек даже в тишине.',
+    'Спасибо тебе за твою нежность и силу одновременно.'
+];
+
+let warmMessagePool = [];
 
 
 const rainCardPresets = [
@@ -106,9 +124,6 @@ function clearFocusHint() {
     input.addEventListener('blur', clearFocusHint);
 });
 
-loginInput.addEventListener('input', () => {
-    loginInput.value = formatLoveLoginInput(loginInput.value);
-});
 
 
 function normalizeInput(value) {
@@ -166,18 +181,24 @@ function updateLoveCounter() {
     `;
 }
 
-function formatLoveLoginInput(value) {
-    const digitsOnly = value.replace(/\D/g, '').slice(0, 8);
-
-    if (digitsOnly.length <= 2) {
-        return digitsOnly;
+function nextWarmMessage() {
+    if (warmMessagePool.length === 0) {
+        warmMessagePool = [...WARM_MESSAGES].sort(() => Math.random() - 0.5);
     }
 
-    if (digitsOnly.length <= 4) {
-        return `${digitsOnly.slice(0, 2)}.${digitsOnly.slice(2)}`;
+    return warmMessagePool.pop();
+}
+
+function showWarmMessage() {
+    if (!warmMessageText) {
+        return;
     }
 
-    return `${digitsOnly.slice(0, 2)}.${digitsOnly.slice(2, 4)}.${digitsOnly.slice(4)}`;
+    warmMessageText.textContent = nextWarmMessage();
+}
+
+if (warmMessageBtn) {
+    warmMessageBtn.addEventListener('click', showWarmMessage);
 }
 
 function showWarmMessage() {
@@ -389,6 +410,9 @@ form.addEventListener('submit', (event) => {
         setTimeout(() => {
             loginScreen.classList.add('hidden');
             valentineScreen.classList.remove('hidden');
+            actionsRow.classList.remove('hidden');
+            warmTools?.classList.remove('hidden');
+            envelopeScene.classList.add('hidden');
         }, 650);
         return;
     }
@@ -488,15 +512,22 @@ yesBtn.addEventListener('click', () => {
     envelope.classList.remove('opened');
 
     actionsRow.classList.add('hidden');
+    warmTools?.classList.add('hidden');
     envelopeScene.classList.remove('hidden');
 });
 
 function openEnvelope() {
     if (!envelopeUnlocked) {
         revealMiniGameGate();
-        if (miniGameStatus) {
-            miniGameStatus.textContent = `Сначала набери ${MINI_GAME_TARGET_SCORE} очков в игре ниже 👇`;
+        if (!miniGameRunning) {
+            startMiniGame();
         }
+
+        if (miniGameStatus) {
+            miniGameStatus.textContent = `Поймай ${MINI_GAME_TARGET_SCORE} сердечек, и конверт откроется 💘`;
+        }
+
+        miniGameGate?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
     envelope.classList.add('opened');

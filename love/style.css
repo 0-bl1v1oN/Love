@@ -318,6 +318,10 @@ body {
     transition: left 0.14s ease, top 0.14s ease;
 }
 
+.warm-tools {
+    width: min(100%, 520px);
+}
+
 
 .love-widget {
     width: min(100%, 520px);
@@ -354,7 +358,7 @@ body {
     opacity: 0.75;
     transform: none;
 }
-
+.warm-message-text,
 .mini-game-status {
     margin: 10px 0 0;
     min-height: 2.5em;
