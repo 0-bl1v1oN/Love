@@ -14,18 +14,8 @@ const proposalCard = document.getElementById('proposalCard');
 const envelopeScene = document.getElementById('envelopeScene');
 const envelope = document.getElementById('envelope');
 const envelopePaper = document.getElementById('envelopePaper');
-
-const letterOverlay = document.getElementById('letterOverlay');
-const closeLetter = document.getElementById('closeLetter');
-const loveRain = document.getElementById('loveRain');
-const confettiLayer = document.getElementById('confettiLayer');
-const loveCounter = document.getElementById('loveCounter');
-const LOVE_LOGIN = '1.12.2020';
-const LOVE_PASSWORD = 'вкусняшка-фитоняшка';
-const LOVE_START_DATE = '2020-12-01';
-
-const warmMessageBtn = document.getElementById('warmMessageBtn');
-const warmMessageText = document.getElementById('warmMessageText');
+const envelopeHint = document.getElementById('envelopeHint');
+const miniGameGate = document.getElementById('miniGameGate');
 const startMiniGameBtn = document.getElementById('startMiniGameBtn');
 const heartGameArea = document.getElementById('heartGameArea');
 const gameScoreEl = document.getElementById('gameScore');
@@ -33,36 +23,24 @@ const gameTimeEl = document.getElementById('gameTime');
 const bestScoreEl = document.getElementById('bestScore');
 const miniGameStatus = document.getElementById('miniGameStatus');
 
-const WARM_MESSAGES = [
-    'Ты — моё самое красивое «почему-то улыбаюсь без причины».',
-    'С тобой даже обычный день становится маленьким праздником.',
-    'Твоя улыбка умеет лечить усталость лучше любого отдыха.',
-    'Рядом с тобой в мире становится больше света.',
-    'Ты делаешь меня добрее просто тем, что существуешь.',
-    'Мне нравится, как ты смеёшься — в этот момент всё правильно.',
-    'Ты вдохновляешь меня быть лучшей версией себя.',
-    'Когда думаю о тебе, внутри сразу становится теплее.',
-    'Ты очень красивая. И внешне, и сердцем.',
-    'С тобой хочется строить планы и верить в чудеса.',
-    'Мне спокойно от мысли, что ты есть в моей жизни.',
-    'Ты — мой любимый человек, даже когда молчишь.',
-    'Каждая встреча с тобой — как любимая песня на повторе.',
-    'Ты приносишь в мою жизнь уют, который нельзя купить.',
-    'Твои глаза — мой любимый вид на свете.',
-    'Рядом с тобой даже дождь кажется романтичным.',
-    'Мне нравится заботиться о тебе и видеть, как ты расцветаешь.',
-    'Ты достойна самой нежной любви — каждый день.',
-    'С тобой хочется смеяться, обниматься и никуда не спешить.',
-    'Спасибо, что ты такая настоящая. Это бесценно.'
-];
+const letterOverlay = document.getElementById('letterOverlay');
+const closeLetter = document.getElementById('closeLetter');
+const loveRain = document.getElementById('loveRain');
+const confettiLayer = document.getElementById('confettiLayer');
+const loveCounter = document.getElementById('loveCounter');
+const LOVE_LOGIN = '01.12.2020';
+const LOVE_PASSWORD = 'вкусняшка-фитоняшка';
+const LOVE_START_DATE = '2020-12-01';
 
-let warmMessagePool = [];
+
 let miniGameTimer = null;
 let miniGameSpawner = null;
 let miniGameScore = 0;
 let miniGameSecondsLeft = 20;
 let miniGameBestScore = 0;
 let miniGameRunning = false;
+let envelopeUnlocked = false;
+const MINI_GAME_TARGET_SCORE = 20;
 
 
 const rainCardPresets = [
@@ -128,6 +106,10 @@ function clearFocusHint() {
     input.addEventListener('blur', clearFocusHint);
 });
 
+loginInput.addEventListener('input', () => {
+    loginInput.value = formatLoveLoginInput(loginInput.value);
+});
+
 
 function normalizeInput(value) {
     return value.trim().toLowerCase().replace(/\s+/g, ' ');
@@ -184,12 +166,18 @@ function updateLoveCounter() {
     `;
 }
 
-function pickWarmMessage() {
-    if (warmMessagePool.length === 0) {
-        warmMessagePool = [...WARM_MESSAGES].sort(() => Math.random() - 0.5);
+function formatLoveLoginInput(value) {
+    const digitsOnly = value.replace(/\D/g, '').slice(0, 8);
+
+    if (digitsOnly.length <= 2) {
+        return digitsOnly;
     }
 
-    return warmMessagePool.pop();
+    if (digitsOnly.length <= 4) {
+        return `${digitsOnly.slice(0, 2)}.${digitsOnly.slice(2)}`;
+    }
+
+    return `${digitsOnly.slice(0, 2)}.${digitsOnly.slice(2, 4)}.${digitsOnly.slice(4)}`;
 }
 
 function showWarmMessage() {
@@ -197,12 +185,14 @@ function showWarmMessage() {
         return;
     }
 
-    const message = pickWarmMessage();
-    warmMessageText.textContent = message;
-    warmMessageText.classList.remove('show');
-    window.requestAnimationFrame(() => {
-        warmMessageText.classList.add('show');
-    });
+    miniGameGate.classList.remove('hidden');
+    if (envelopeHint) {
+        envelopeHint.textContent = `Нужно ${MINI_GAME_TARGET_SCORE} очков, чтобы открыть конверт 💘`;
+    }
+
+    if (miniGameStatus && !miniGameRunning) {
+        miniGameStatus.textContent = `Набери минимум ${MINI_GAME_TARGET_SCORE} очков и конверт откроется.`;
+    }
 }
 
 function cleanupMiniGameHearts() {
@@ -213,40 +203,7 @@ function cleanupMiniGameHearts() {
     heartGameArea.querySelectorAll('.falling-heart').forEach((heart) => heart.remove());
 }
 
-function spawnMiniGameHeart() {
-    if (!heartGameArea || !miniGameRunning) {
-        return;
-    }
-
-    const heart = document.createElement('button');
-    heart.type = 'button';
-    heart.className = 'falling-heart';
-    heart.textContent = ['💗', '💖', '💘', '💝'][Math.floor(Math.random() * 4)];
-
-    const maxX = Math.max(6, heartGameArea.clientWidth - 40);
-    const left = Math.round(6 + Math.random() * (maxX - 6));
-    const duration = (1.8 + Math.random() * 1.4).toFixed(2);
-
-    heart.style.left = `${left}px`;
-    heart.style.setProperty('--heart-fall-duration', `${duration}s`);
-
-    heart.addEventListener('click', () => {
-        if (!miniGameRunning) {
-            return;
-        }
-
-        miniGameScore += 1;
-        if (gameScoreEl) {
-            gameScoreEl.textContent = String(miniGameScore);
-        }
-        heart.remove();
-    }, { once: true });
-
-    heart.addEventListener('animationend', () => heart.remove(), { once: true });
-    heartGameArea.appendChild(heart);
-}
-
-function finishMiniGame() {
+function finishMiniGame(keepButtonDisabled = false) {
     miniGameRunning = false;
     window.clearInterval(miniGameTimer);
     window.clearInterval(miniGameSpawner);
@@ -260,17 +217,77 @@ function finishMiniGame() {
     }
 
     if (startMiniGameBtn) {
-        startMiniGameBtn.disabled = false;
-        startMiniGameBtn.textContent = 'Сыграть ещё раз';
+        startMiniGameBtn.disabled = keepButtonDisabled;
+        startMiniGameBtn.textContent = keepButtonDisabled ? 'Цель выполнена 💖' : 'Сыграть ещё раз';
     }
 
-    if (miniGameStatus) {
-        miniGameStatus.textContent = `Игра окончена! Ты поймала ${miniGameScore} сердечек 🥰`;
+    if (miniGameStatus && !envelopeUnlocked) {
+        miniGameStatus.textContent = `Пока ${miniGameScore} из ${MINI_GAME_TARGET_SCORE}. Попробуй ещё раз 🫶`;
     }
 }
 
+function unlockEnvelope() {
+    if (envelopeUnlocked) {
+        return;
+    }
+
+    envelopeUnlocked = true;
+    if (miniGameStatus) {
+        miniGameStatus.textContent = `Ура! Цель достигнута: ${miniGameScore} очков. Конверт открыт ✨`;
+    }
+    if (envelopeHint) {
+        envelopeHint.textContent = 'Конверт открыт! Нажми на письмо внутри 💌';
+    }
+
+    finishMiniGame(true);
+    envelope.classList.add('opened');
+}
+
+
+function spawnMiniGameHeart() {
+    if (!heartGameArea || !miniGameRunning || envelopeUnlocked) {
+        return;
+    }
+
+    const heart = document.createElement('button');
+    heart.type = 'button';
+    heart.className = 'falling-heart';
+    heart.textContent = ['💗', '💖', '💘', '💝'][Math.floor(Math.random() * 4)];
+
+    const maxX = Math.max(6, heartGameArea.clientWidth - 40);
+    const left = Math.round(6 + Math.random() * (maxX - 6));
+    const duration = (1.6 + Math.random() * 1.2).toFixed(2);
+
+    heart.style.left = `${left}px`;
+    heart.style.setProperty('--heart-fall-duration', `${duration}s`);
+
+    const collectHeart = (event) => {
+        if (event) {
+            event.preventDefault();
+        }
+
+        if (!miniGameRunning || envelopeUnlocked) {
+            return;
+        }
+
+        miniGameScore += 1;
+        if (gameScoreEl) {
+            gameScoreEl.textContent = String(miniGameScore);
+        }
+
+        heart.remove();
+    };
+
+    heart.addEventListener('click', collectHeart, { once: true });
+    heart.addEventListener('touchstart', collectHeart, { once: true, passive: false });
+
+    heart.addEventListener('animationend', () => heart.remove(), { once: true });
+    heartGameArea.appendChild(heart);
+}
+
+
 function startMiniGame() {
-    if (!heartGameArea || miniGameRunning) {
+    if (!heartGameArea || miniGameRunning || envelopeUnlocked) {
         return;
     }
 
@@ -291,18 +308,23 @@ function startMiniGame() {
     }
 
     if (miniGameStatus) {
-        miniGameStatus.textContent = 'Лови сердечки кликом — поехали!';
+        miniGameStatus.textContent = `Лови сердечки! Нужно ${MINI_GAME_TARGET_SCORE} очков 💞`;
     }
 
     cleanupMiniGameHearts();
     spawnMiniGameHeart();
 
-    miniGameSpawner = window.setInterval(spawnMiniGameHeart, 480);
+    miniGameSpawner = window.setInterval(spawnMiniGameHeart, 430);
     miniGameTimer = window.setInterval(() => {
         miniGameSecondsLeft -= 1;
 
         if (gameTimeEl) {
             gameTimeEl.textContent = String(Math.max(0, miniGameSecondsLeft));
+        }
+
+        if (miniGameScore >= MINI_GAME_TARGET_SCORE) {
+            unlockEnvelope();
+            return;
         }
 
         if (miniGameSecondsLeft <= 0) {
@@ -311,9 +333,6 @@ function startMiniGame() {
     }, 1000);
 }
 
-if (warmMessageBtn) {
-    warmMessageBtn.addEventListener('click', showWarmMessage);
-}
 
 if (startMiniGameBtn) {
     startMiniGameBtn.addEventListener('click', startMiniGame);
@@ -446,11 +465,40 @@ yesBtn.addEventListener('click', () => {
     noBtn.style.left = '';
     noBtn.style.top = '';
 
+    envelopeUnlocked = false;
+    miniGameScore = 0;
+    miniGameSecondsLeft = 20;
+    finishMiniGame();
+
+    if (gameScoreEl) {
+        gameScoreEl.textContent = '0';
+    }
+    if (gameTimeEl) {
+        gameTimeEl.textContent = '20';
+    }
+    if (miniGameGate) {
+        miniGameGate.classList.add('hidden');
+    }
+    if (envelopeHint) {
+        envelopeHint.textContent = 'Нажми на конверт — он откроется ✨';
+    }
+    if (miniGameStatus) {
+        miniGameStatus.textContent = 'Нажми на конверт, чтобы начать испытание 💞';
+    }
+    envelope.classList.remove('opened');
+
     actionsRow.classList.add('hidden');
     envelopeScene.classList.remove('hidden');
 });
 
 function openEnvelope() {
+    if (!envelopeUnlocked) {
+        revealMiniGameGate();
+        if (miniGameStatus) {
+            miniGameStatus.textContent = `Сначала набери ${MINI_GAME_TARGET_SCORE} очков в игре ниже 👇`;
+        }
+        return;
+    }
     envelope.classList.add('opened');
 }
 
