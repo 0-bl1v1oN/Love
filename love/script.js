@@ -221,8 +221,8 @@ function showWarmMessage() {
 
 bindReliableTap(warmMessageBtn, showWarmMessage);
 
-function showWarmMessage() {
-    if (!warmMessageText) {
+function revealMiniGameGate() {
+    if (!miniGameGate) {
         return;
     }
 
@@ -274,14 +274,20 @@ function unlockEnvelope() {
 
     envelopeUnlocked = true;
     if (miniGameStatus) {
-        miniGameStatus.textContent = `Ура! Цель достигнута: ${miniGameScore} очков. Конверт открыт ✨`;
+        miniGameStatus.textContent = `Ура! Цель достигнута: ${miniGameScore} очков. Конверт откроется через секунду ✨`;
     }
     if (envelopeHint) {
         envelopeHint.textContent = 'Конверт открыт! Нажми на письмо внутри 💌';
     }
 
     finishMiniGame(true);
-    envelope.classList.add('opened');
+    window.setTimeout(() => {
+        if (miniGameGate) {
+            miniGameGate.classList.add('hidden');
+        }
+
+        envelope.classList.add('opened');
+    }, 900);
 }
 
 
